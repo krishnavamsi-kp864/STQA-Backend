@@ -1,40 +1,48 @@
 package com.krishna.app.rest.controller;
 
 
-import com.krishna.app.rest.Models.User;
-import com.krishna.app.rest.Repo.UserRepo;
+import com.krishna.app.rest.Models.LoginUser;
+
+import com.krishna.app.rest.Repo.LoginuserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
 public class Apicontrollers {
+   
+
     @Autowired
-    private UserRepo userRepo;
+    LoginuserRepo loginUserRepo;
     @GetMapping(value = "/")
     public String getPage(){
         return "Welcome";
     }
     @GetMapping(value="/users")
 
-    public List<User> getUsers(){
+    public List<LoginUser> getUsers(){
 
-        return userRepo.findAll();
+        return loginUserRepo.findAll();
+
     }
+@GetMapping(value="/find/{username}/{password}")
+public Optional<LoginUser> getUsersByNameAndPassword(@PathVariable String username, @PathVariable String password ){
 
-//    @GetMapping(value="/users/id")
-//
-//    public List<User> getUsersById(@RequestParam int id){
-//
-//        return userRepo.findbyId(id);
-//    }
+    Optional<LoginUser> loginValidation;
+    loginValidation = loginUserRepo.findByUsernameAndPassword(username, password);
+    return loginValidation;
+
+}
+
+
 
     @PostMapping(value="/save")
-    public String saveUsers(@RequestBody User user){
+    public String saveUsers(@RequestBody LoginUser loginuser){
 
-        userRepo.save(user);
+        loginUserRepo.save(loginuser);
         return "saved with no error";
     }
 }
